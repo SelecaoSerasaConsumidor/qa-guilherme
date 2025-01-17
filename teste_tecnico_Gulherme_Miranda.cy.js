@@ -118,4 +118,21 @@ describe('Teste técnico - Validação de pagamento', () => {
         cy.log('Pagamento confirmado com sucesso e e-mail enviado!');
       });
     });
+    
+ it('Cenário 6: Deve processar notificação de pagamento via webhook', () => {
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.env('apiBaseUrl')}/pix/webhook`,
+        headers: {
+          Authorization: `Bearer ${Cypress.env('authToken')}`,
+        },
+        body: {
+          pixKey: 'chavePixExemplo',
+          status: 'confirmed',
+        },
+      }).then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body).to.have.property('status', 'confirmed');
+      });
+    });
   });
